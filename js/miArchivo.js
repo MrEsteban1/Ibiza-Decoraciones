@@ -175,7 +175,9 @@ const borrarCompra = (nombre) => {
     if (dato.nombre === nombre) return id;
   });
 
-  for (let i = 0; i < comprasRefactor.length; i++) {}
+  for (let i = 0; i < comprasRefactor.length; i++) {
+    com;
+  }
 
   console.log("compras :");
   console.log(compras);
