@@ -13,15 +13,13 @@ class Cliente {
   }
 }
 
-let numeroImg = 0;
-
 class Producto {
-  constructor(id, nombre, tipo, precio, imagen) {
+  constructor(id, nombre, tipo, precio) {
     this.id = id;
     this.nombre = nombre;
     this.tipo = tipo;
     this.precio = precio;
-    this.imagen = "assets/imagen" + numeroImg++ + ".jpg";
+    this.imagen = "assets/imagen" + id + ".jpg";
   }
 }
 
@@ -38,16 +36,25 @@ let productos = {
     new Producto(1, "Lampara Colgante", "Lamparas", 500),
     new Producto(2, "Lampara de escritorio", "Lamparas", 1500),
     new Producto(3, "Lampara larga", "Lamparas", 800),
+    new Producto(10, "Lampara redonda", "Lamparas", 1800),
+    new Producto(11, "Lampara antique", "Lamparas", 600),
+    new Producto(12, "Lampara Techo Negra", "Lamparas", 600),
+    new Producto(13, "Lampara Pie Cruz", "Lamparas", 1600),
   ],
   adornos: [
     new Producto(4, "Cuadro", "Adornos", 500),
     new Producto(5, "Llavero colgante", "Adornos", 1500),
     new Producto(6, "Florero", "Adornos", 800),
+    new Producto(14, "Cuadro", "Adornos", 500),
+    new Producto(15, "Llavero colgante", "Adornos", 1500),
+    new Producto(16, "Florero", "Adornos", 800),
   ],
   luces: [
     new Producto(7, "Blancas", "Luces", 500),
     new Producto(8, "Led", "Luces", 1500),
     new Producto(9, "Calidas", "Luces", 800),
+    new Producto(17, "Coloridas", "Luces", 500),
+    new Producto(18, "infrarojo", "Luces", 1500),
   ],
 };
 
@@ -77,10 +84,10 @@ function mostrarProductos(productos, inicio = false) {
   }
 
   for (const producto of productos) {
-    catalogo += `<div class="card" style="width: 18rem;">
+    catalogo += `<div class="card col-8 col-sm-4 col-lg-2 p-2 m-4">
 						<img src="${
               producto.imagen
-            }" class="card-img-top" alt="..." style="height: 18rem;">
+            }" class="card-img-top" alt="..." style="height: 16rem;">
 					  	<div class="card-body">
 						    <h5 class="card-title">${i++}. ${producto.nombre}</h5>
 						    <span class="d-block m-2">Precio: $ ${producto.precio}</span>
@@ -92,24 +99,16 @@ function mostrarProductos(productos, inicio = false) {
   }
 
   $("#productos").append(`<h3>${productos[0].tipo}:</h3>
-								<div class="row justify-content-evenly" id="catalogo" >
+								<div class="row justify-content-left" id="catalogo" >
 									${catalogo}
 								</div>`);
   console.log("QUE LLEGA???");
-  console.log(productos);
   productoTipo = productos[0].tipo.toString().toLowerCase();
 }
 
-function cargarCompra(id) {
-  let producto = productos[productoTipo];
-
-  producto = producto.find((e) => e.id === parseInt(id, 10));
-  compras.push(producto);
-  console.log(compras);
-  implementarCompra(compras);
-
-  localStorage.setItem("compras", JSON.stringify(compras));
-}
+/* **********************************
+COMPRAS
+*************************************/
 
 function mostrarError() {
   $("#productos").append(
@@ -117,19 +116,28 @@ function mostrarError() {
   );
 }
 
-function implementarCompra(compras) {
+function cargarCompra(id) {
+  let producto = productos[productoTipo];
+  producto = producto.find((e) => e.id === parseInt(id, 10));
+  compras.push(producto);
+  console.log(compras);
+  implementarCompra();
+
+  localStorage.setItem("compras", JSON.stringify(compras));
+}
+
+function implementarCompra() {
   let i = 1;
   let total = 0;
   let comprasHtml = ``;
   let acumulador = [];
   let cantidadCompra = [];
-
-  ordenarCompras(compras);
+  //ordenarCompras(compras);
 
   compras.map((dato) => {
     if (!acumulador.includes(dato.nombre)) {
       acumulador.push(dato.nombre);
-      cantidadCompra.push({ nombre: dato.nombre, cantidad: 1 });
+      cantidadCompra.push({ id: dato.id, nombre: dato.nombre, cantidad: 1 });
     } else {
       cantidadCompra[cantidadCompra.findIndex((e) => e.nombre === dato.nombre)]
         .cantidad++;
@@ -139,13 +147,14 @@ function implementarCompra(compras) {
 
   for (const compra of cantidadCompra) {
     comprasHtml += `<li class="list-group-item px-4">${compra.cantidad} X ${compra.nombre} 
-      <button type="button" id="borrarCompras" onclick="borrarCompra('${compra.nombre}')"  class="btn btn-danger mx-2 botonProducto h-50">Borrar</button>
+      <button type="button" id="borrarCompras" onclick="borrarCompra('${compra.id}')"  class="btn btn-danger mx-2 botonProducto h-50">Borrar</button>
       </li>`;
   }
 
-  let listaCarrito = `<li class="list-group-item bg-primary">Total : ${total}</li>`;
+  let listaCarrito = `<li class="list-group-item bg-warning">Total : ${total}</li>`;
 
   listaCarrito += comprasHtml;
+  listaCarrito += `<li class="list-group-item"><a href="./compra.html" class="btn btn-success">Comprar</button></a>`;
 
   $(totalCarrito).empty();
   $(totalCarrito).append(compras.length);
@@ -162,53 +171,84 @@ function resetearCompras() {
   resetContadorCompra();
 }
 
-const resetContadorCompra = () => {
-  $(totalCarrito).empty(0);
-  $(totalCarrito).append(0);
+const resetContadorCompra = (numero = 0) => {
+  $(totalCarrito).empty();
+  $(totalCarrito).append(numero);
 };
 
-const borrarCompra = (nombre) => {
-  compras = JSON.parse(localStorage.getItem("compras"));
-  comprasRefactor;
+const borrarCompra = (id) => {
   localStorage.removeItem("compras");
-  let idBusqueda = compras.map((dato, id) => {
-    if (dato.nombre === nombre) return id;
-  });
 
-  for (let i = 0; i < comprasRefactor.length; i++) {
-    com;
+  if (compras.length === 1) {
+    inicializarCompras();
+    resetContadorCompra();
+    localStorage.removeItem("compras");
+    compras = [];
+    return;
   }
 
-  console.log("compras :");
   console.log(compras);
 
-  localStorage.setItem("compras", JSON.stringify(compras));
-  resetContadorCompra();
-  inicializarCompras();
+  let comprasRefactor = compras.filter((d) => d.id != parseInt(id, 10));
+
+  compras = comprasRefactor;
+
+  localStorage.setItem("compras", JSON.stringify(comprasRefactor));
+  inicializarCompras(comprasRefactor);
+  resetContadorCompra(comprasRefactor.length);
 };
 
-function inicializarCompras() {
-  compras = JSON.parse(localStorage.getItem("compras"));
-  console.log(compras);
-
-  if (compras) {
-    implementarCompra();
+function inicializarCompras(item = false) {
+  if (item) {
+    implementarCompra(compras);
   } else {
+    $("compras").empty();
     let comprasHtml = document.getElementById("compras");
     comprasHtml.innerHTML = `<li class="list-group-item">No se agrego elementos al carrito </li>`;
     compras = [];
   }
 }
 
-const searchProduct = (nombre) => {
-  $("#productos").hide();
-  $("#productos").empty();
+const ordenarCompras = (compras) => {
+  return compras.sort(function (a, b) {
+    if (a.nombre > b.nombre) {
+      return 1;
+    }
+    if (a.nombre < b.nombre) {
+      return -1;
+    }
+    return 0;
+  });
+};
 
+const cargarPantallaCompras = (compras) => {
+  $("carritoCompras").empty();
+  let comprasCarrito = ordenarCompras(compras);
+  let listaComprasHTML = "";
+  for (let compra of comprasCarrito) {
+    listaComprasHTML = +`<li class="list-group-item">${comprasCarrito}</li>`;
+  }
+
+  let carrito = `<div class="card">
+    <div class="card-header bg-info">Compras:</div>
+      <ul class="list-group list-group-flush">
+        ${listaComprasHTML}
+      </ul>
+  </div>`;
+
+  $("carritoCompras").append(carrito);
+};
+
+/****************************
+ * BUSCADOR
+ */
+
+const searchProduct = (nombre) => {
   if (nombre === "") {
-    $("#productos").append(
-      "<h3>No se encontraron productos relacionados...</h3>"
-    );
+    return;
   } else {
+    $("#productos").hide();
+    $("#productos").empty();
     let arrayProductos = [];
 
     for (const tipo in productos) {
@@ -232,19 +272,6 @@ const searchProduct = (nombre) => {
   $("#productos").show();
 };
 
-const ordenarCompras = (compras) => {
-  compras.sort(function (a, b) {
-    if (a.nombre > b.nombre) {
-      return 1;
-    }
-    if (a.nombre < b.nombre) {
-      return -1;
-    }
-    // a must be equal to b
-    return 0;
-    console.log(compras);
-  });
-};
 /*
 ========================
 Programa
@@ -252,18 +279,10 @@ Programa
 */
 
 $(document).ready(() => {
-  inicializarCompras();
-  mostrarProductos(productos["luces"], (inicio = true));
+  compras = JSON.parse(localStorage.getItem("compras"));
+  inicializarCompras(Array.isArray(compras));
+  mostrarProductos(productos["lamparas"]);
   $("#busqueda").click(() => searchProduct($("#nombreBuscado").val()));
 });
 
-/*
-$("form").submit( function (e) {
-	e.preventDefault();
-
-	console.log("PASO POR ACA")
-	let valor = $(e.target).children()
-	
-	//searchProduct(hijo[0].value);
-	
-} )*/
+cargarPantallaCompras(compras);

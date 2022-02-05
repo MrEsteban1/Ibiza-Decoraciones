@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "nombre": "Lampara Colgante",
+    "tipo": "Lamparas",
+    "precio": 500,
+    "imagen": "assets/imagen1.jpg"
+  },
+  {
+    "id": 2,
+    "nombre": "Lampara de escritorio",
+    "tipo": "Lamparas",
+    "precio": 600,
+    "imagen": "assets/imagen2.jpg"
+  },
+  {
+    "id": 3,
+    "nombre": "Lampara larga",
+    "tipo": "Lamparas",
+    "precio": 300,
+    "imagen": "assets/imagen3.jpg"
+  },
+  {
+    "id": 4,
+    "nombre": "Cuadro",
+    "tipo": "Adornos",
+    "precio": 200,
+    "imagen": "assets/imagen4.jpg"
+  },
+  {
+    "id": 5,
+    "nombre": "Llavero colgante",
+    "tipo": "Adornos",
+    "precio": 600,
+    "imagen": "assets/imagen5.jpg"
+  },
+  {
+    "id": 6,
+    "nombre": "Florero",
+    "tipo": "Adornos",
+    "precio": 300,
+    "imagen": "assets/imagen6.jpg"
+  },
+  {
+    "id": 7,
+    "nombre": "Blanca",
+    "tipo": "Luces",
+    "precio": 300,
+    "imagen": "assets/imagen7.jpg"
+  },
+  {
+    "id": 8,
+    "nombre": "Led",
+    "tipo": "Luces",
+    "precio": 300,
+    "imagen": "assets/imagen8.jpg"
+  },
+  {
+    "id": 9,
+    "nombre": "Led",
+    "tipo": "Luces",
+    "precio": 300,
+    "imagen": "assets/imagen9.jpg"
+  }
+]
