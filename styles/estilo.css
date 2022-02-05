@@ -1,11 +1,25 @@
-nav{
-	background: #F0ECE3;
+nav {
+  background: #f0ece3;
 }
 
-body{
-	background-color: #DFD3C3;
+body {
+  background-color: #dfd3c3;
+  position: relative;
+  min-height: 100vh;
 }
 
-#productos{
-	background-color: #C7B198;
+footer {
+  background-color: #c7b198;
+  bottom: 0;
+  width: 100%;
+  position: absolute;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+li {
+  list-style-type: none;
 }
